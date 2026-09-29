@@ -1,0 +1,35 @@
+"use client";
+import {useEffect,useState,useId,useRef} from 'react';
+import {Button} from '@/components/ui/button';
+import {Sheet,SheetTrigger,SheetContent,SheetTitle,SheetClose} from '@/components/ui/sheet';
+import Primary from '@/components/design-system/F21-1253';
+import Secondary from '@/components/design-system/F21-1261';
+import {ProjectCard} from '@/components/design-system/Component';
+import type {Project} from '@/components/design-system/Component';
+const contact='/contact';
+const services=[{title:'Expérience digitale',id:'experience-digitale'},{title:'Stratégie de marque',id:'strategie-de-marque'},{title:'Identité visuelle',id:'identite-visuelle'}];
+function Actions(){return <div className="home-actions"><a href={contact}><Primary/></a><a href="/projets"><Secondary/></a></div>}
+function Brand({footer=false}:{footer?:boolean}){return <a className="home-brand" href="/" aria-label="Étape Zero — Accueil"><img src={footer?"/assets/brand/eye-footer.svg":"/assets/brand/eye.svg"} width={footer?27:22} height={footer?27:22} alt=""/><span>Étape Zero</span></a>}
+function Services({onNavigate}:{onNavigate?:()=>void}){
+ const [open,setOpen]=useState(false);const id=useId();const root=useRef<HTMLDivElement>(null);
+ const items=[services[1],services[2],services[0]];
+ return <div ref={root} className="home-services-nav" onPointerEnter={e=>{if(e.pointerType==='mouse')setOpen(true)}} onPointerLeave={e=>{if(e.pointerType==='mouse')setOpen(false)}} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget))setOpen(false)}} onKeyDown={e=>{if(e.key==='Escape'){setOpen(false);root.current?.querySelector('button')?.focus();e.preventDefault()}if(e.key==='ArrowDown'&&!open){e.preventDefault();setOpen(true);requestAnimationFrame(()=>root.current?.querySelector<HTMLAnchorElement>('.home-services-panel a')?.focus())}}}>
+ <a href="/services" onFocus={()=>setOpen(true)} onClick={()=>{setOpen(false);onNavigate?.()}}>Services</a><button className="home-services-toggle" type="button" aria-label="Afficher les services" aria-expanded={open} aria-controls={id} onClick={()=>setOpen(v=>!v)}>+</button>
+ {open&&<div className="home-services-panel" id={id}><div>{items.map(s=><a key={s.id} href={s.id==='strategie-de-marque'?'/services/'+s.id:'/services#'+s.id} onClick={()=>{setOpen(false);onNavigate?.()}}>{s.title}</a>)}</div></div>}
+ </div>
+}
+function Clock(){const [time,setTime]=useState('');useEffect(()=>{const update=()=>setTime(new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(new Date()));update();const timer=setInterval(update,1000);return()=>clearInterval(timer)},[]);return <time aria-label="Heure à Lyon">{time||'— : — : —'}</time>}
+export function Home({projects}:{projects:Project[]}){
+ return <div className="home" id="accueil"><a className="home-skip" href="#contenu">Aller au contenu</a>
+ <SiteHeader/>
+ <main id="contenu"><section className="home-hero home-gutter" id="studio" aria-labelledby="home-intro"><div><h1 id="home-intro">Étape Zero est un studio de branding indépendant, spécialisé dans les projets de rebranding et de repositionnement.</h1><Actions/></div></section>
+ <section className="home-projects home-gutter" id="projets" aria-labelledby="projects-title"><h2 id="projects-title">Nos récentes études de cas</h2><div className="home-project-grid">{[projects.slice(0,2),projects.slice(2,5),projects.slice(5,8),...Array.from({length:Math.ceil(Math.max(0,projects.length-8)/3)},(_,i)=>projects.slice(8+i*3,11+i*3))].map((row,r)=><div className={'home-project-row row-'+r} key={r}>{row.map(p=><div key={p.id} className={'home-project-slot slot-'+p.id+(['u-tragulinu','decibell','active-life','solespace'].includes(p.id)?' extra-mobile':'')}><ProjectCard project={p} format={r===0?'large':['pb-cosmetics','cooked'].includes(p.id)?'wide':'narrow'}/></div>)}</div>)}</div><Button asChild className="home-all-projects" variant="secondary"><a href="/projets">Tous nos projets</a></Button></section>
+ <SiteCTA/></main>
+ <SiteFooter/></div>
+}
+
+export function SiteHeader(){const [menu,setMenu]=useState(false);return ( <header className="home-header"><div className="home-desktop-header"><Brand/><nav aria-label="Navigation principale"><a href="/projets">Projets</a><Services/><a href="/a-propos">Le Studio</a><a href="/journal">Le journal</a></nav><a className="home-header-contact" href={contact}>Contact</a></div>
+ <div className="home-mobile-header"><Sheet open={menu} onOpenChange={setMenu}><SheetTrigger asChild><Button className="home-menu-trigger" variant="secondary">Menu</Button></SheetTrigger><SheetContent side="top" className="home-menu" showCloseButton={false} aria-describedby={undefined}><SheetTitle className="sr-only">Menu principal</SheetTitle><div className="home-menu-top"><SheetClose asChild><Button className="home-menu-trigger" variant="secondary">Fermer</Button></SheetClose><Brand/><a href={contact}>Contact</a></div><nav aria-label="Navigation mobile"><a href="/projets" onClick={()=>setMenu(false)}>Projets</a><Services onNavigate={()=>setMenu(false)}/><a href="/a-propos" onClick={()=>setMenu(false)}>Le Studio</a><a href="/journal" onClick={()=>setMenu(false)}>Le journal</a></nav><a className="home-menu-email" href="mailto:contact@etapezero.com">contact@etapezero.com</a></SheetContent></Sheet><Brand/><a href={contact}>Contact</a></div></header>);}
+
+export function SiteCTA(){return <section className="home-cta home-gutter" id="contact" aria-labelledby="cta-title"><div className="home-cta-copy"><h2 id="cta-title">Votre projet sera forcément différent. Notre approche elle restera la même.</h2><Actions/></div><div className="home-cta-gallery" aria-label="Inspirations graphiques du studio">{['Composition graphique multicolore','Table de travail et recherches visuelles','Livre de création typographique bleu et blanc'].map((alt,i)=><div key={alt} className={'home-gallery-slot gallery-'+i}><img src={'/assets/accueil/cta-'+(i+1)+'.webp'} alt={alt} width={591} height={711} loading="lazy" decoding="async"/></div>)}</div></section>}
+export function SiteFooter(){return <footer className="home-footer home-gutter"><div className="home-footer-info"><div className="home-footer-column">{services.map(s=><a key={s.id} href={'/services#'+s.id}>{s.title}</a>)}</div><div className="home-footer-column">{[['Instagram','https://www.instagram.com/etape.zero/'],['YouTube','https://www.youtube.com/@Clemlevrai'],['LinkedIn','https://www.linkedin.com/in/cl%C3%A9ment-le-baillif-1449ab253/']].map(([name,url])=><a key={name} href={url} target="_blank" rel="noopener noreferrer">{name}</a>)}</div><div className="home-footer-column"><span>Clément LE BAILLIF</span><span>Fondateur du Studio</span><a href="mailto:contact@etapezero.com">contact@etapezero.com</a></div><div className="home-footer-column"><span>Lyon</span><Clock/></div></div><div className="home-footer-end"><Brand footer/><div><a href="/mentions-legales">Mentions légales</a><span>©2026 Étape Zero</span></div></div></footer>}
