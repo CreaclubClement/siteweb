@@ -1,0 +1,9 @@
+import {z} from 'zod';
+const text=z.string().max(20000);
+export const photoSchema=z.object({src:z.string().max(2000).refine(v=>v===''||/^\/(?:media|assets)\/[a-zA-Z0-9/_.-]+$/.test(v),'Importer une image ou utiliser un chemin /media/ ou /assets/.'),poster:z.string().max(2000).refine(v=>v===''||/^\/(?:media|assets)\/[a-zA-Z0-9/_.-]+$/.test(v),'Chemin de média invalide.').optional(),alt:z.string().max(500),fit:z.enum(['cover','contain']),position:z.enum(['center','top','bottom','left','right'])});
+export type Photo=z.infer<typeof photoSchema>;
+export const projectSchema=z.object({id:z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(100),title:z.string().trim().min(1).max(150),category:z.string().max(150),description:text,sector:z.string().max(150),year:z.string().max(30),development:z.array(z.string().max(150)).max(20),services:z.array(z.string().max(150)).max(30),cover:photoSchema,hero:photoSchema,context:text,challenges:text,decisions:text,results:text,metrics:z.array(z.object({value:z.string().max(100),label:z.string().max(150)})).max(12),galleries:z.object({context:z.array(photoSchema).max(30),challenges:z.array(photoSchema).max(30),decisions:z.array(photoSchema).max(30),results:z.array(photoSchema).max(30)}),published:z.boolean(),listed:z.boolean()});
+export type CMSProject=z.infer<typeof projectSchema>;
+export type ProjectRecord={project:CMSProject;revision:number};
+export const blankPhoto=():Photo=>({src:'',alt:'',fit:'cover',position:'center'});
+export function blankProject():CMSProject{return {id:'',title:'',category:'',description:'',sector:'',year:'',development:[],services:[],cover:blankPhoto(),hero:blankPhoto(),context:'',challenges:'',decisions:'',results:'',metrics:[],galleries:{context:[],challenges:[],decisions:[],results:[]},published:false,listed:false};}

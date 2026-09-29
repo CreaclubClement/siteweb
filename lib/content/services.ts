@@ -1,0 +1,11 @@
+export const services = [
+  {id:'strategie-de-marque', title:'Stratégie de marque', eyebrow:'Comprendre avant d’agir.', image:'e77e6.png', description:'Avant de créer une identité ou un site, nous clarifions votre positionnement, votre vision et la perception que votre entreprise souhaite construire.', skills:['Naming','Manifeste','Identité verbale','Plateforme de marque','Personnalité','Raison d’être','Concept de marque']},
+  {id:'identite-visuelle', title:'Identité visuelle', eyebrow:'Comprendre avant d’agir.', image:null, description:'Nous transformons votre stratégie en un système graphique cohérent, durable et identifiable. Une identité pensée pour accompagner la croissance de votre entreprise sur l’ensemble de ses points de contact.', skills:['Big idea','Univers graphique','Logo & déclinaison','Palette Typographique','Palette de couleurs','Photographies','Direction visuelle']},
+  {id:'experience-digitale', title:'Expérience digitale', eyebrow:'Prolonger la marque dans le digital.', image:'3cf9d.png', description:'Nous concevons des expériences digitales qui traduisent votre positionnement et accompagnent vos objectifs. Chaque interface est pensée pour créer une expérience fluide, cohérente et orientée conversion.', skills:['UX/UI Design','Parcours utilisateur','Expérience client','Product design','Dev Webflow','Dev Shopify','Dev sur-mesure']},
+];
+export const methodSteps = [
+  {title:'Comprendre',image:'/assets/strategie/feature.webp',tags:'Positionnement • Plateforme de marque • Direction',description:'Comprendre votre entreprise, son contexte et ses ambitions afin de construire des bases solides avant toute décision.'},
+  {title:'Définir',image:'/assets/strategie/info.webp',tags:'Positionnement • Plateforme de marque • Direction',description:'Clarifier votre positionnement et définir une direction capable de guider l’ensemble des décisions créatives.'},
+  {title:'Révéler',image:'/assets/strategie/strategy.webp',tags:'Identité visuelle • Expérience digitale • Déploiement',description:'Donner vie à la stratégie à travers une identité cohérente et des expériences alignées avec votre marque.'},
+  {title:'Transmettre',image:'/assets/strategie/roadmap.webp',tags:'Livraison • Documentation • Accompagnement',description:'Vous transmettre un système clair, durable et pensé pour faire évoluer votre marque dans le temps.'},
+];

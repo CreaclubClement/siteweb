@@ -1,0 +1,17 @@
+"use client";
+import {useState} from 'react';
+import {Tabs,TabsList,TabsTrigger} from '@/components/ui/tabs';
+import {Select,SelectTrigger,SelectContent,SelectValue,SelectItem} from '@/components/ui/select';
+import {catalog} from '@/components/design-system/catalog';
+import {DesignComponent} from '@/components/design-system/Component';
+const families=['Projets','Articles','Services','Navigation','Boutons','FAQ','Filtres','Formulaires','Médias'];
+export default function Page(){const [family,setFamily]=useState('Projets');const [selected,setSelected]=useState('21:886');const [variant,setVariant]=useState('Default');const [mobile,setMobile]=useState(false);const entry=catalog.find(e=>e.id===selected)!;
+ function pick(id:string){const next=catalog.find(c=>c.id===id)!;setSelected(id);setVariant(next.defaultVariant);}
+ return <main className="library"><header className="library-header"><a href="#" className="wordmark">Étape Zero<span>®</span></a><span className="edition">Design système · 01</span></header><div className="library-title"><div><p className="eyebrow">Les fondations du site</p><h1>Bibliothèque de composants.</h1></div><p className="library-intro">86 composants, des formats fluides et une identité commune.</p></div>
+ <div className="asset-notice" role="status">Version de travail — les images et pictogrammes Figma restent à importer. La validation visuelle est en attente.</div>
+ <Tabs value={family} onValueChange={f=>{setFamily(f);pick(catalog.find(c=>c.family===f)!.id)}}><TabsList className="family-tabs" variant="line">{families.map(f=><TabsTrigger key={f} value={f}>{f}<span>{catalog.filter(c=>c.family===f).length}</span></TabsTrigger>)}</TabsList></Tabs>
+ <section className="workbench"><div className="component-picker"><label htmlFor="component-list">Composant</label><div className="mobile-picker"><Select value={selected} onValueChange={pick}><SelectTrigger id="component-list" aria-label="Composant"><SelectValue/></SelectTrigger><SelectContent>{catalog.filter(c=>c.family===family).map((c,i)=><SelectItem key={c.id} value={c.id}>{String(i+1).padStart(2,'0')} · {c.name}</SelectItem>)}</SelectContent></Select></div><div className="component-list">{catalog.filter(c=>c.family===family).map((c,i)=><button type="button" key={c.id} aria-pressed={selected===c.id} onClick={()=>pick(c.id)}><span>{String(i+1).padStart(2,'0')}</span>{c.name}</button>)}</div></div>
+ <div className="preview-panel"><div className="preview-toolbar"><div><p className="eyebrow">{entry.family}</p><h2>{entry.name}</h2></div><div className="preview-options"><Select value={variant} onValueChange={setVariant}><SelectTrigger aria-label="Variante" className="variant-select"><SelectValue/></SelectTrigger><SelectContent>{entry.variants.map((v,i)=><SelectItem value={v} key={v+i}>{v}</SelectItem>)}</SelectContent></Select><button className="size-toggle" aria-pressed={mobile} onClick={()=>setMobile(!mobile)}>{mobile?'Mobile · 375':'Largeur fluide'}</button></div></div>
+ <div className="preview-stage"><div className={'preview-surface '+(mobile?'preview-mobile':'')}><DesignComponent key={entry.id} id={entry.id} variant={variant} onVariantChange={setVariant}/></div></div><div className="preview-caption"><span>{entry.variants.length} états · Survolez ou cliquez pour explorer</span><span>Largeur : Fill</span></div></div></section>
+ <footer className="library-footer"><span>La stratégie guide. Le design révèle.</span><span>Étape Zero — Composants du site</span></footer></main>;
+}
